@@ -7,6 +7,7 @@ use crate::proto;
 mod task_service;
 mod node_service;
 mod middles;
+mod entity;
 
 pub async fn server(cfg:Config,exit:Exit)->anyhow::Result<()>{
     let ts = task_service::TaskService::new();
@@ -28,5 +29,24 @@ pub async fn server(cfg:Config,exit:Exit)->anyhow::Result<()>{
         .serve("127.0.0.1:666".parse().unwrap()).await?;Ok(())
 }
 
+#[tonic::async_trait]
+pub trait DistributedLock{
+    async fn lock(&self,key:String,timeout:Duration)->anyhow::Result<bool>;
+    async fn unlock(&self,key:String)->anyhow::Result<()>;
+}
 
+pub enum ElectionResultRole{
+    Master,
+    Worker
+}
 
+#[tonic::async_trait]
+pub trait Election{
+    async fn campaign(&self,my_name:String)->anyhow::Result<ElectionResultRole>;
+}
+
+#[tonic::async_trait]
+pub trait Store{
+    async fn create_task(&self)->anyhow::Result<String>;
+    async fn task_detail(&self,id:i64)->anyhow::Result<()>;
+}

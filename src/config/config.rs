@@ -35,11 +35,16 @@ field_generate!(Server;
     host_port,String,String::from("0.0.0.0:670"),"Server::host_port");
 
 field_generate!(MongoDb;
-    url,String,String::from("mongodb://dispatch_admin:1443965173@10.37.129.190:27019/dispatch"),"MongoDb::url";
+    url,String,String::from("mongodb://user:passwd@127.0.0.1:123/db_name"),"MongoDb::url";
     max_conn_size,u32,20u32,"MongoDb::max_conn_size");
 
+field_generate!(PGSql;
+    url,String,String::from("postgres://postgres:password@localhost/test"),"PGSql::url";
+    max_conn_size,u64,20u64,"PGSql::max_conn_size";
+    max_idle_conn,u64,3u64,"PGSql::max_idle_conn");
+
 field_generate!(Redis;
-    url,String,String::from("redis://:passwd@10.37.129.190:6379/0"),"Redis::url";
+    url,String,String::from("redis://:passwd@127.0.0.1:6379/0"),"Redis::url";
     max_conn_size,u64,20u64,"Redis::max_conn_size";
     max_idle_conn,u64,1u64,"Redis::max_idle_conn");
 
