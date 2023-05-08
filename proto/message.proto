@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package pb;
+
+message Coordinator{
+  int64 id = 1;
+  int32 app_id = 2;
+  string name = 3;
+  int32 version = 4; //变更版本号
+
+  repeated Node nodes = 50; //节点集
+  Strategy strategy = 51;   //策略
+
+
+  oneof mode{
+    Master master = 100;
+    Slot slot = 101;
+    HashRing hash_ring = 102;
+  };
+}
+
+message Master{ //选主
+
+}
+
+message Slot{//槽方式
+  int32 count = 1; // 槽数量
+  repeated SlotAlloc slot_alloc = 2; //槽分配情况
+}
+
+message SlotAlloc{
+  string node_code = 1;
+  repeated int32 slots = 2;
+}
+
+message HashRing{  //哈希环
+
+}
+enum NodeStatus{
+  INVALID = 0; //无效
+  INIT = 1;    //准备加入集群
+  ACTIVE = 2;  //活跃
+  EXPIRE = 3;  //过期
+  DEAD = 4;    //已死
+}
+message Node{
+  string code = 1; //节点编号 必须唯一
+  string addr = 2; //节点地址
+  NodeStatus status = 3; //节点状态
+  int64 last_ping_time = 4; //最后一次活跃时间 utc
+}
+message Strategy{
+  int64 dead_timeout_sec = 1; //节点死亡超时 单位:S
+}

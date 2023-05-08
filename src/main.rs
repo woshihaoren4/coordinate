@@ -1,3 +1,10 @@
-fn main() {
-    wd_log::log_debug_ln!("hello world")
+mod proto;
+mod cmd;
+mod app;
+mod infra;
+mod config;
+
+#[tokio::main]
+async fn main() {
+    cmd::start().await;
 }

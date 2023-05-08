@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package pb;
+
+import "message.proto";
+import "google/api/annotations.proto";
+
+service NodeService{
+  //节点加入任务集
+  rpc JoinTask(JoinTaskRequest)returns(JoinTaskResponse){
+    option (google.api.http) = {
+      post: "/api/v1/node/join"
+      body: "*"
+    };
+  }
+  //节点退出任务集
+  rpc ExitTask(ExitTaskRequest)returns(ExitTaskResponse){
+    option (google.api.http) = {
+      post: "/api/v1/node/exit"
+      body: "*"
+    };
+  }
+  //节点保活
+  rpc Ping(PingRequest)returns(PingResponse){
+    option (google.api.http) = {
+      get: "/api/v1/node/ping"
+    };
+  }
+
+  //槽分配方式任务查询
+  rpc SlotDistributions(SlotDistributionsRequest)returns(SlotDistributionsResponse){
+    option (google.api.http) = {
+      post: "/api/v1/node/{node_code}/slot"
+      body: "*"
+    };
+  }
+}
+
+message JoinTaskRequest{
+  int32 app_id = 1; //在token中处理
+  int64 task_id = 2;
+
+  string code = 3; //节点编号 必须唯一
+  string addr = 4; //节点地址
+}
+message JoinTaskResponse{
+  string token = 1; //节点令牌，在调用其他接口是应将此token放入metadata中
+
+  int32 code = 254; //0 success
+  string message = 255;
+}
+message ExitTaskRequest{
+//  string code = 1;
+//  string app_id = 2;
+  bool wait_node_balance = 3;
+  optional int32 wait_timeout_sec = 4; //等到超时
+}
+message ExitTaskResponse{
+  bool balance_success = 1; //重分配成功，其他节点已唤醒
+
+  int32 code = 254; //0 success
+  string message = 255;
+}
+
+message PingRequest{
+//  string code = 1;
+//  string app_id = 2;
+}
+message PingResponse{
+  int32 version = 1;
+
+  int32 code = 254; //0 success
+  string message = 255;
+}
+message SlotDistributionsRequest{
+  string node_code = 1;
+}
+message SlotDistributionsResponse{
+  repeated int32 slots = 2;
+
+  int32 code = 254; //0 success
+  string message = 255;
+}
