@@ -46,9 +46,3 @@ pub enum ElectionResultRole{
 pub trait Election{
     async fn campaign(&self,my_name:String)->anyhow::Result<ElectionResultRole>;
 }
-
-#[tonic::async_trait]
-pub trait Store{
-    async fn create_task(&self)->anyhow::Result<String>;
-    async fn task_detail(&self,id:i64)->anyhow::Result<()>;
-}
