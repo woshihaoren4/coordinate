@@ -39,7 +39,7 @@ field_generate!(MongoDb;
     max_conn_size,u32,20u32,"MongoDb::max_conn_size");
 
 field_generate!(PGSql;
-    url,String,String::from("postgres://teshin:teshin123321@1.116.41.230:5432/coordination"),"PGSql::url";
+    url,String,String::from("postgres://user:passwd@localhost:5432/coordination"),"PGSql::url";
     max_conn_size,u32,20u32,"PGSql::max_conn_size";
     max_idle_conn,u32,3u32,"PGSql::max_idle_conn");
 

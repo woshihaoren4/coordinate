@@ -16,7 +16,7 @@ pub struct RunApplication{
 impl TaskBuild for RunApplication{
     fn args(&self) -> TaskInfo {
         TaskInfo::new("run","run coordination server")
-            .register_arg("-c","./src/config/config.toml","config file path")
+            .register_arg("-c","./src/config/dev_config.toml","config file path")
     }
 
     async fn build(&mut self, mut ctx: Context) -> Arc<dyn Task> {

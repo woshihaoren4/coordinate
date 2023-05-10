@@ -13,10 +13,11 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
+src/config/dev_config.toml
+
 .idea
 
 # Added by cargo
 
 /target
 
-./src/config/dev_config.toml

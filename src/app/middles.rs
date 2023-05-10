@@ -70,7 +70,7 @@ impl LayerHyperInterceptor for MiddleLog {
             Some(s)=> s.to_str().unwrap_or("2"),
             None=>"2",
         };
-        if grpc_result == "0" {
+        if grpc_result == "2" {
             wd_log::log_debug_ln!("response[{}]---> ok",rid);
         }else{
             let grpc_message = match response.headers().get("grpc-message") {
