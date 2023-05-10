@@ -1,10 +1,10 @@
 use std::sync::Arc;
-use std::sync::atomic::{AtomicIsize, Ordering};
 use std::time::Duration;
 use wd_run::{Context, TaskBuild,Task, TaskInfo};
 use wd_tools::PFArc;
 use crate::{app, config};
 use crate::config::Config;
+use crate::infra::db;
 use crate::infra::exit::Exit;
 
 #[derive(Debug,Default,Clone)]
@@ -40,7 +40,8 @@ pub struct RunEntity{
 impl Task for RunEntity {
     async fn run(&self) -> anyhow::Result<()> {
         self.life.start();
-        let res = app::server(self.cfg.clone(),self.life.clone()).await;
+        let db = db::init_pgsql(self.cfg.pgcfg.clone()).await.expect("connection pgsql failed");
+        let res = app::server(self.cfg.clone(),self.life.clone(),db.arc()).await;
         res
     }
 

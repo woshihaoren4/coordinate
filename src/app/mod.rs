@@ -1,4 +1,6 @@
+use std::sync::Arc;
 use std::time::Duration;
+use sqlx::PgPool;
 use crate::config::Config;
 use crate::infra::exit::Exit;
 use crate::infra::middle::CustomInterceptor;
@@ -9,8 +11,8 @@ mod node_service;
 mod middles;
 mod entity;
 
-pub async fn server(cfg:Config,exit:Exit)->anyhow::Result<()>{
-    let ts = task_service::TaskService::new();
+pub async fn server(cfg:Config,exit:Exit,db:Arc<PgPool>)->anyhow::Result<()>{
+    let ts = task_service::TaskService::new(db);
     let ns = node_service::NodeService::new();
     let mid_log = middles::MiddleLog{};
     let mid_exit = middles::MiddleExit::new(exit);

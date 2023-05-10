@@ -13,6 +13,9 @@ impl NodeService {
 #[tonic::async_trait]
 impl proto::node_service_server::NodeService for NodeService{
     async fn join_task(&self, request: Request<JoinTaskRequest>) -> Result<Response<JoinTaskResponse>, Status> {
+        //查询所有节点信息
+        //节点重平衡
+        //
         Err(Status::new(Code::Unknown,"todo"))
     }
 
