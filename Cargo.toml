@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 wd_log = "0.2.0"
 wd_run = "0.3.1"
-wd_tools = {version = "0.6.3",features=["point-free","uid","snowflake"]}
+wd_tools = {version = "0.6.3",features=["point-free","uid","snowflake","time"]}
 tokio = "1.28.0"
 tonic = "0.9.2"
 prost = "0.11.9"
@@ -21,6 +21,7 @@ wd_event = "0.5.0"
 serde = "1.0.162"
 serde_json = "1.0.96"
 sqlx = {version = "0.6.3",features = ["time","postgres", "runtime-tokio-rustls"] }
+etcd-rs = "1.0.1"
 
 [build-dependencies]
 tonic-build = {version = "0.9.2" ,features = ["prost"] }

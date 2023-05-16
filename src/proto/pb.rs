@@ -16,26 +16,9 @@ pub struct Coordinator {
     /// 策略
     #[prost(message, optional, tag = "51")]
     pub strategy: ::core::option::Option<Strategy>,
-    #[prost(oneof = "coordinator::Mode", tags = "100, 101, 102")]
-    pub mode: ::core::option::Option<coordinator::Mode>,
+    #[prost(message, optional, tag = "101")]
+    pub slot: ::core::option::Option<Slot>,
 }
-/// Nested message and enum types in `Coordinator`.
-pub mod coordinator {
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Mode {
-        #[prost(message, tag = "100")]
-        Master(super::Master),
-        #[prost(message, tag = "101")]
-        Slot(super::Slot),
-        #[prost(message, tag = "102")]
-        HashRing(super::HashRing),
-    }
-}
-/// 选主
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Master {}
 /// 槽方式
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -46,6 +29,12 @@ pub struct Slot {
     /// 槽分配情况
     #[prost(message, repeated, tag = "2")]
     pub slot_alloc: ::prost::alloc::vec::Vec<SlotAlloc>,
+    /// 单节点最大
+    #[prost(int32, tag = "3")]
+    pub node_max_count: i32,
+    /// 单节点最小
+    #[prost(int32, tag = "4")]
+    pub node_min_count: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -55,10 +44,6 @@ pub struct SlotAlloc {
     #[prost(int32, repeated, tag = "2")]
     pub slots: ::prost::alloc::vec::Vec<i32>,
 }
-/// 哈希环
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct HashRing {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {
@@ -79,8 +64,8 @@ pub struct Node {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Strategy {
     /// 节点死亡超时 单位:S
-    #[prost(int64, tag = "1")]
-    pub dead_timeout_sec: i64,
+    #[prost(int32, tag = "1")]
+    pub dead_timeout_sec: i32,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -133,21 +118,8 @@ pub struct CreateTaskRequest {
     /// 策略
     #[prost(message, optional, tag = "51")]
     pub strategy: ::core::option::Option<Strategy>,
-    #[prost(oneof = "create_task_request::Mode", tags = "100, 101, 102")]
-    pub mode: ::core::option::Option<create_task_request::Mode>,
-}
-/// Nested message and enum types in `CreateTaskRequest`.
-pub mod create_task_request {
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Mode {
-        #[prost(message, tag = "100")]
-        Master(super::Master),
-        #[prost(message, tag = "101")]
-        Slot(super::Slot),
-        #[prost(message, tag = "102")]
-        HashRing(super::HashRing),
-    }
+    #[prost(message, optional, tag = "101")]
+    pub slot: ::core::option::Option<Slot>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

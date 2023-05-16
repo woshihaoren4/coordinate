@@ -1,6 +1,5 @@
-use sqlx::PgPool;
-use crate::config;
-
 mod pg;
+mod etcd;
 
 pub use pg::*;
+pub use etcd::*;

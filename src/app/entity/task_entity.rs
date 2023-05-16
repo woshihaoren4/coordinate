@@ -1,14 +1,7 @@
-use futures::SinkExt;
-use sqlx::{Executor, PgPool, Postgres, Transaction};
 use serde::{Deserialize, Serialize};
-use sqlx::types::Json;
-use sqlx::types::time::Time;
-use crate::proto;
-use crate::proto::{CreateTaskRequest, Strategy};
-use crate::proto::create_task_request::Mode;
+use crate::proto::{CreateTaskRequest};
 
-// #[derive(Debug, Clone, Serialize, Deserialize)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TaskEntity{
     pub task_id : i64,
     pub app_id : i32,
@@ -16,81 +9,45 @@ pub struct TaskEntity{
     pub version : i32,
 
     pub dead_timeout_sec : i32,
-    pub r#type : i32,
+    // pub r#type : i32,
 
-    pub content: Json<TaskContent>,
+    pub content:TaskContent,
 
-    pub created_at : Time,
-    pub updated_at : Time,
+    pub created_at : i64,
+    pub updated_at : i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize,Default)]
 pub struct TaskContent{
     slot_count : i32,
+    node_max_count : i32,
+    node_min_count : i32,
 }
 
-impl TaskEntity
-{
-    pub async fn create<'c, E>(&self,tx:E)->anyhow::Result<()>
-        where
-            E: Executor<'c, Database = Postgres>,
-    {
-        sqlx::query(r#"INSERT INTO tasks(task_id, app_id, task_name, "version", dead_timeout_sec, "type","content") VALUES($1, $2, $3, $4, $5, $6, $7);"#)
-            .bind(&self.task_id)
-            .bind(&self.app_id)
-            .bind(&self.task_name)
-            .bind(&self.version)
-            .bind(&self.dead_timeout_sec)
-            .bind(&self.r#type)
-            .bind(&self.content)
-            .execute(tx).await?;Ok(())
+
+impl ToString for TaskEntity{
+    fn to_string(&self) -> String {
+        serde_json::to_string(self).expect("can not to here")
     }
 }
 
-impl From<&proto::CreateTaskRequest> for TaskEntity
-{
-    fn from(value: &CreateTaskRequest) -> TaskEntity {
-         let mut te = TaskEntity{
-             task_id: wd_tools::snowflake_id(),
-             app_id: value.app_id.unwrap_or(1),
-             task_name: value.name.clone(),
-             version : 0,
-             dead_timeout_sec: 60,
-             content: Json(TaskContent::default()),
-             r#type: 0,
-             created_at: Time::MIDNIGHT,
-             updated_at: Time::MIDNIGHT,
-         };
-        if let Some(ref s) =  value.strategy {
-            te.dead_timeout_sec = s.dead_timeout_sec as i32;
+impl From<CreateTaskRequest> for TaskEntity{
+    fn from(value: CreateTaskRequest) -> Self {
+        let slot = value.slot.unwrap();
+        let nt = wd_tools::time::utc_timestamp();
+        TaskEntity{
+            task_id: wd_tools::snowflake_id(),
+            app_id: value.app_id.unwrap_or(1),
+            task_name: value.name,
+            version: 0,
+            dead_timeout_sec: value.strategy.unwrap().dead_timeout_sec,
+            // r#type: value.mode.unwrap().into(),
+            content: TaskContent{
+                slot_count: slot.count,
+                node_max_count: slot.node_max_count,
+                node_min_count: slot.node_min_count},
+            created_at: nt,
+            updated_at: nt,
         }
-        if let Some(ref s) = value.mode {
-            match s {
-                Mode::Master(_) => te.r#type = 1,
-                Mode::Slot(slot) => {
-                    te.r#type = 2;
-                    te.content.slot_count = slot.count;
-                }
-                Mode::HashRing(_) => te.r#type = 3,
-            }
-        }
-        te
     }
 }
-
-// message Coordinator{
-// int64 id = 1;
-// int32 app_id = 2;
-// string name = 3;
-// int32 version = 4; //变更版本号
-//
-// repeated Node nodes = 50; //节点集
-// Strategy strategy = 51;   //策略
-//
-//
-// oneof mode{
-// Master master = 100;
-// Slot slot = 101;
-// HashRing hash_ring = 102;
-// };
-// }

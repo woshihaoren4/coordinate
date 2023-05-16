@@ -30,12 +30,8 @@ message CreateTaskRequest{
 
   Strategy strategy = 51;   //策略
 
+  Slot slot = 101;
 
-  oneof mode{
-    Master master = 100;
-    Slot slot = 101;
-    HashRing hash_ring = 102;
-  };
 }
 
 message CreateTaskResponse{

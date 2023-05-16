@@ -40,8 +40,8 @@ pub struct RunEntity{
 impl Task for RunEntity {
     async fn run(&self) -> anyhow::Result<()> {
         self.life.start();
-        let db = db::init_pgsql(self.cfg.pgcfg.clone()).await.expect("connection pgsql failed");
-        let res = app::server(self.cfg.clone(),self.life.clone(),db.arc()).await;
+        let client = db::EtcdClient::init(self.cfg.etcd.endpoints.clone()).await?.arc();
+        let res = app::server(self.cfg.clone(),self.life.clone(),client).await;
         res
     }
 

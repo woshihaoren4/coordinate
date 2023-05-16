@@ -11,21 +11,16 @@ message Coordinator{
   repeated Node nodes = 50; //节点集
   Strategy strategy = 51;   //策略
 
-
-  oneof mode{
-    Master master = 100;
-    Slot slot = 101;
-    HashRing hash_ring = 102;
-  };
-}
-
-message Master{ //选主
+  Slot slot = 101;
 
 }
+
 
 message Slot{//槽方式
   int32 count = 1; // 槽数量
   repeated SlotAlloc slot_alloc = 2; //槽分配情况
+  int32 node_max_count = 3; //单节点最大
+  int32 node_min_count = 4; //单节点最小
 }
 
 message SlotAlloc{
@@ -33,9 +28,6 @@ message SlotAlloc{
   repeated int32 slots = 2;
 }
 
-message HashRing{  //哈希环
-
-}
 enum NodeStatus{
   INVALID = 0; //无效
   INIT = 1;    //准备加入集群
@@ -50,5 +42,5 @@ message Node{
   int64 last_ping_time = 4; //最后一次活跃时间 utc
 }
 message Strategy{
-  int64 dead_timeout_sec = 1; //节点死亡超时 单位:S
+  int32 dead_timeout_sec = 1; //节点死亡超时 单位:S
 }

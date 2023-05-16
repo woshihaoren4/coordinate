@@ -32,7 +32,7 @@ macro_rules! field_generate {
 
 field_generate!(Server;
     name,String,String::from("dispatch"),"Server::name";
-    host_port,String,String::from("0.0.0.0:670"),"Server::host_port");
+    host_port,String,String::from("0.0.0.0:666"),"Server::host_port");
 
 field_generate!(MongoDb;
     url,String,String::from("mongodb://user:passwd@127.0.0.1:123/db_name"),"MongoDb::url";
@@ -42,6 +42,12 @@ field_generate!(PGSql;
     url,String,String::from("postgres://user:passwd@localhost:5432/coordination"),"PGSql::url";
     max_conn_size,u32,20u32,"PGSql::max_conn_size";
     max_idle_conn,u32,3u32,"PGSql::max_idle_conn");
+
+field_generate!(Etcd;
+    endpoints,Vec<String>,vec!["http://127.0.0.1:12379".to_string()],"Etcd::endpoints";
+    user,String,String::from("root"),"Etcd::user";
+    passwd,String,String::from("123"),"Etcd::passwd";
+    version,String,String::from("api/v1/"),"Etcd::version");
 
 field_generate!(Redis;
     url,String,String::from("redis://:passwd@127.0.0.1:6379/0"),"Redis::url";
@@ -65,8 +71,10 @@ pub struct Config {
     pub server: Server,
     // #[serde(default = "DataSource::default")]
     // pub data_source: DataSource,
-    #[serde(default = "PGSql::default")]
-    pub pgcfg: PGSql,
+    // #[serde(default = "PGSql::default")]
+    // pub pgcfg: PGSql,
+    #[serde(default = "Etcd::default")]
+    pub etcd: Etcd,
     #[serde(default = "Redis::default")]
     pub cache: Redis,
 }

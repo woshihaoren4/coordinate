@@ -1,6 +1,6 @@
+mod app;
 mod proto;
 mod cmd;
-mod app;
 mod infra;
 mod config;
 
