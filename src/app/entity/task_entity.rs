@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
-use crate::proto::{CreateTaskRequest};
+use wd_tools::PFSome;
+use crate::proto::{Coordinator, CreateTaskRequest, Slot, Strategy};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,Default)]
 pub struct TaskEntity{
     pub task_id : i64,
     pub app_id : i32,
@@ -31,6 +32,11 @@ impl ToString for TaskEntity{
     }
 }
 
+impl<T: AsRef<str>> From<T> for TaskEntity {
+    fn from(value: T) -> Self {
+        serde_json::from_str::<TaskEntity>(value.as_ref()).unwrap_or(Default::default())
+    }
+}
 impl From<CreateTaskRequest> for TaskEntity{
     fn from(value: CreateTaskRequest) -> Self {
         let slot = value.slot.unwrap();
@@ -48,6 +54,25 @@ impl From<CreateTaskRequest> for TaskEntity{
                 node_min_count: slot.node_min_count},
             created_at: nt,
             updated_at: nt,
+        }
+    }
+}
+
+impl Into<Coordinator> for TaskEntity {
+    fn into(self) -> Coordinator {
+        Coordinator{
+            id: self.task_id,
+            app_id: self.app_id,
+            name: self.task_name,
+            version: self.version,
+            nodes: vec![],
+            strategy: Strategy{ dead_timeout_sec: self.dead_timeout_sec }.some(),
+            slot: Slot{
+                count: self.content.slot_count,
+                slot_alloc: vec![],
+                node_max_count: self.content.node_max_count,
+                node_min_count: self.content.node_max_count,
+            }.some(),
         }
     }
 }

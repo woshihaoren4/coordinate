@@ -27,7 +27,7 @@ impl proto::coordination_service_server::CoordinationService for TaskService{
         }
 
         let task = TaskEntity::from(request.into_inner());
-        match self.store.create_task(task.task_id.clone().to_string(), &task).await{
+        match self.store.create_task(task.task_id, &task).await{
             Ok(_) => success!(CreateTaskResponse,id:task.task_id),
             Err(e) => server_err!(CreateTaskResponse,e,id:0),
         }
@@ -38,6 +38,11 @@ impl proto::coordination_service_server::CoordinationService for TaskService{
     }
 
     async fn task_detail(&self, request: Request<TaskDetailRequest>) -> Result<Response<TaskDetailResponse>, Status> {
-        Err(Status::new(Code::Unknown,"todo"))
+        let tid = request.get_ref().task_id;
+        wd_log::log_debug_ln!("查询任务详情：{} {}",request.get_ref().task_id,tid);
+        match self.store.get_task(tid).await {
+            Ok(t) => success!(TaskDetailResponse,task:Some(t.into())),
+            Err(e) => server_err!(TaskDetailResponse,e,task:None),
+        } ;
     }
 }

@@ -1,3 +1,5 @@
+pub const DB_VERSION:&'static str = "/api/v1";
+
 #[macro_export]
 macro_rules! response {
     ($name:tt,$code:expr,$message:expr,$($key:tt:$value:expr),*) => {

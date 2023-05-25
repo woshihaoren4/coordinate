@@ -1,4 +1,4 @@
-#[macro_use] mod common;
+#[macro_use]pub mod common;
 
 mod task_service;
 mod node_service;
@@ -7,7 +7,7 @@ mod entity;
 
 use std::sync::Arc;
 use std::time::Duration;
-use crate::app::entity::EntityStore;
+use crate::app::entity::{EntityStore, GlobalLock};
 use crate::config::Config;
 use crate::infra::exit::Exit;
 use crate::infra::middle::CustomInterceptor;
@@ -16,9 +16,9 @@ use crate::proto;
 
 
 
-pub async fn server(cfg:Config,exit:Exit,store : Arc<dyn EntityStore>)->anyhow::Result<()>{
+pub async fn server(cfg:Config,exit:Exit,store : Arc<dyn EntityStore>,lock:Arc<dyn GlobalLock>)->anyhow::Result<()>{
     let ts = task_service::TaskService::new(store.clone());
-    let ns = node_service::NodeService::new();
+    let ns = node_service::NodeService::new(store.clone(),lock);
     let mid_log = middles::MiddleLog{};
     let mid_exit = middles::MiddleExit::new(exit);
 
