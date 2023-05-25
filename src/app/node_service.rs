@@ -36,6 +36,8 @@ impl proto::node_service_server::NodeService for NodeService{
 
         //todo
 
+        tokio::time::sleep(Duration::from_secs(20)).await;
+
         //解锁
         if let Err(e) = self.lock.unlock(tid,lock).await{
             wd_log::log_error_ln!("join_task unlock：{}",e);
