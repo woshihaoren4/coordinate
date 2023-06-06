@@ -50,8 +50,8 @@ message JoinTaskResponse{
   string message = 255;
 }
 message ExitTaskRequest{
-//  string code = 1;
-//  string app_id = 2;
+  int64 task_id = 1;
+  string code = 2; //节点编号 必须唯一
   bool wait_node_balance = 3;
   optional int32 wait_timeout_sec = 4; //等到超时
 }
@@ -74,9 +74,10 @@ message PingResponse{
 }
 message SlotDistributionsRequest{
   string node_code = 1;
+  int64 task_id = 2;
 }
 message SlotDistributionsResponse{
-  repeated int32 slots = 2;
+  repeated int32 tags = 2;
 
   int32 code = 254; //0 success
   string message = 255;

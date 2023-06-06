@@ -9,14 +9,14 @@ use crate::infra::db;
 use crate::infra::exit::Exit;
 
 #[derive(Debug,Default,Clone)]
-pub struct RunApplication{
+pub struct CleanTask{
 
 }
 
 #[wd_run::async_trait]
-impl TaskBuild for RunApplication{
+impl TaskBuild for CleanTask{
     fn args(&self) -> TaskInfo {
-        TaskInfo::new("run","run coordination server")
+        TaskInfo::new("clean","clean all task")
             .register_arg("-c","./src/config/dev_config.toml","config file path")
     }
 
@@ -27,26 +27,18 @@ impl TaskBuild for RunApplication{
         let cfg = wd_log::res_panic!(config::load_config_by_file(config_file);"load config failed");
         wd_log::log_debug_ln!("config load success --->{}",cfg.to_string());
 
-        let life = Exit::default();
-        RunEntity {life,cfg  }.arc()
+        CleanEntity { cfg  }.arc()
     }
 }
 
-pub struct RunEntity{
-    life: Exit,
+pub struct CleanEntity{
     cfg:Config,
 }
 
 #[wd_run::async_trait]
-impl Task for RunEntity {
+impl Task for CleanEntity {
     async fn run(&self) -> anyhow::Result<()> {
-        self.life.start();
-        let client = db::EtcdClient::init(self.cfg.etcd.endpoints.clone()).await?.arc();
-        let res = app::server(self.cfg.clone(),self.life.clone(),client.clone(),client).await;
-        res
-    }
-
-    async fn exit(&self) -> anyhow::Result<()> {
-        self.life.wait_task_complete_exit(Duration::from_secs(5)).await
+        let client = db::EtcdClient::init(self.cfg.etcd.endpoints.clone()).await?;
+        entity::clean_tasks(client).await?;Ok(())
     }
 }

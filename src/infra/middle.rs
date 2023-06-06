@@ -88,3 +88,22 @@ impl<S> tower::Service<hyper::Request<hyper::Body>> for MyMiddleware<S>
         })
     }
 }
+
+// pub trait RawInterceptor: Send + Sync {
+//     fn intercept(&self,mut req: tonic::Request<()>) -> Result<tonic::Request<()>,tonic::Status> {
+//         Ok(req)
+//     }
+// }
+//
+// #[tonic::async_trait]
+// impl<T> LayerHyperInterceptor for T
+// where T:RawInterceptor
+// {
+//     async fn request(
+//         &self,
+//         _ctx: wd_event::Context,
+//         request: hyper::Request<hyper::Body>,
+//     ) -> Result<hyper::Request<hyper::Body>, hyper::Response<tonic::body::BoxBody>> {
+//
+//     }
+// }

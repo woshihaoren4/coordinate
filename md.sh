@@ -25,8 +25,12 @@ case $1 in
 
   ;;
 "run")
-  echo "cargo run --bin server"
+  echo "cargo run --bin server -- run"
   sudo cargo run --bin server -- run
+;;
+"clean_task")
+  echo "cargo run --bin server -- clean"
+  sudo cargo run --bin server -- clean
 ;;
 "clean")
   echo "cargo clean"

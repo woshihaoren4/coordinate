@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use hyper::{Body, Response};
 use tonic::body::BoxBody;
 use tonic::{Code, Status};
@@ -78,5 +79,46 @@ impl LayerHyperInterceptor for MiddleLog {
         }
 
         response
+    }
+}
+
+pub struct MiddleNodeAuth{
+    path: HashSet<String>
+}
+
+#[tonic::async_trait]
+impl LayerHyperInterceptor for MiddleNodeAuth {
+    async fn request(&self, _ctx: Context, request: hyper::Request<Body>) -> Result<hyper::Request<Body>, Response<BoxBody>> {
+        let path = request.uri().path();
+        let mut need_auth = false;
+        for i in self.path.iter(){
+            if path.contains(i) {
+                need_auth = true;
+                break
+            }
+        }
+        if !need_auth {
+            return Ok(request)
+        }
+        // let opt = match request.headers().get("node_code") {
+        //     None => {""}
+        //     Some(s) => {
+        //         s.to_str().unwrap_or("")
+        //     }
+        // };
+        // let timestamp = match request.headers().get("time_stamp") {
+        //     None => {""}
+        //     Some(s) => {
+        //         s.to_str().unwrap_or("")
+        //     }
+        // };
+        // let token = match request.headers().get("token") {
+        //     None => {""}
+        //     Some(s) => {
+        //         s.to_str().unwrap_or("")
+        //     }
+        // };
+        // println!("auth -> ")
+        Ok(request)
     }
 }

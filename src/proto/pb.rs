@@ -1,6 +1,6 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Coordinator {
+pub struct Task {
     #[prost(int64, tag = "1")]
     pub id: i64,
     #[prost(int32, tag = "2")]
@@ -143,7 +143,12 @@ pub struct SearchTasksRequest {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SearchTasksResponse {
     #[prost(message, repeated, tag = "1")]
-    pub tasks: ::prost::alloc::vec::Vec<Coordinator>,
+    pub tasks: ::prost::alloc::vec::Vec<Task>,
+    /// 0 success
+    #[prost(int32, tag = "254")]
+    pub code: i32,
+    #[prost(string, tag = "255")]
+    pub message: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -158,7 +163,7 @@ pub struct TaskDetailRequest {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TaskDetailResponse {
     #[prost(message, optional, tag = "1")]
-    pub task: ::core::option::Option<Coordinator>,
+    pub task: ::core::option::Option<Task>,
     /// 0 success
     #[prost(int32, tag = "254")]
     pub code: i32,
@@ -166,15 +171,15 @@ pub struct TaskDetailResponse {
     pub message: ::prost::alloc::string::String,
 }
 /// Generated client implementations.
-pub mod coordination_service_client {
+pub mod task_service_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
-    pub struct CoordinationServiceClient<T> {
+    pub struct TaskServiceClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl CoordinationServiceClient<tonic::transport::Channel> {
+    impl TaskServiceClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -185,7 +190,7 @@ pub mod coordination_service_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> CoordinationServiceClient<T>
+    impl<T> TaskServiceClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::Error: Into<StdError>,
@@ -203,7 +208,7 @@ pub mod coordination_service_client {
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
-        ) -> CoordinationServiceClient<InterceptedService<T, F>>
+        ) -> TaskServiceClient<InterceptedService<T, F>>
         where
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
@@ -217,7 +222,7 @@ pub mod coordination_service_client {
                 http::Request<tonic::body::BoxBody>,
             >>::Error: Into<StdError> + Send + Sync,
         {
-            CoordinationServiceClient::new(InterceptedService::new(inner, interceptor))
+            TaskServiceClient::new(InterceptedService::new(inner, interceptor))
         }
         /// Compress requests with the given encoding.
         ///
@@ -268,11 +273,10 @@ pub mod coordination_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/pb.CoordinationService/CreateTask",
+                "/pb.TaskService/CreateTask",
             );
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("pb.CoordinationService", "CreateTask"));
+            req.extensions_mut().insert(GrpcMethod::new("pb.TaskService", "CreateTask"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn search_tasks(
@@ -293,11 +297,11 @@ pub mod coordination_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/pb.CoordinationService/SearchTasks",
+                "/pb.TaskService/SearchTasks",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("pb.CoordinationService", "SearchTasks"));
+                .insert(GrpcMethod::new("pb.TaskService", "SearchTasks"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn task_detail(
@@ -318,22 +322,21 @@ pub mod coordination_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/pb.CoordinationService/TaskDetail",
+                "/pb.TaskService/TaskDetail",
             );
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("pb.CoordinationService", "TaskDetail"));
+            req.extensions_mut().insert(GrpcMethod::new("pb.TaskService", "TaskDetail"));
             self.inner.unary(req, path, codec).await
         }
     }
 }
 /// Generated server implementations.
-pub mod coordination_service_server {
+pub mod task_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with CoordinationServiceServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with TaskServiceServer.
     #[async_trait]
-    pub trait CoordinationService: Send + Sync + 'static {
+    pub trait TaskService: Send + Sync + 'static {
         async fn create_task(
             &self,
             request: tonic::Request<super::CreateTaskRequest>,
@@ -357,7 +360,7 @@ pub mod coordination_service_server {
         >;
     }
     #[derive(Debug)]
-    pub struct CoordinationServiceServer<T: CoordinationService> {
+    pub struct TaskServiceServer<T: TaskService> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
@@ -365,7 +368,7 @@ pub mod coordination_service_server {
         max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: CoordinationService> CoordinationServiceServer<T> {
+    impl<T: TaskService> TaskServiceServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -417,9 +420,9 @@ pub mod coordination_service_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for CoordinationServiceServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for TaskServiceServer<T>
     where
-        T: CoordinationService,
+        T: TaskService,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -435,11 +438,11 @@ pub mod coordination_service_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/pb.CoordinationService/CreateTask" => {
+                "/pb.TaskService/CreateTask" => {
                     #[allow(non_camel_case_types)]
-                    struct CreateTaskSvc<T: CoordinationService>(pub Arc<T>);
+                    struct CreateTaskSvc<T: TaskService>(pub Arc<T>);
                     impl<
-                        T: CoordinationService,
+                        T: TaskService,
                     > tonic::server::UnaryService<super::CreateTaskRequest>
                     for CreateTaskSvc<T> {
                         type Response = super::CreateTaskResponse;
@@ -479,11 +482,11 @@ pub mod coordination_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/pb.CoordinationService/SearchTasks" => {
+                "/pb.TaskService/SearchTasks" => {
                     #[allow(non_camel_case_types)]
-                    struct SearchTasksSvc<T: CoordinationService>(pub Arc<T>);
+                    struct SearchTasksSvc<T: TaskService>(pub Arc<T>);
                     impl<
-                        T: CoordinationService,
+                        T: TaskService,
                     > tonic::server::UnaryService<super::SearchTasksRequest>
                     for SearchTasksSvc<T> {
                         type Response = super::SearchTasksResponse;
@@ -525,11 +528,11 @@ pub mod coordination_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/pb.CoordinationService/TaskDetail" => {
+                "/pb.TaskService/TaskDetail" => {
                     #[allow(non_camel_case_types)]
-                    struct TaskDetailSvc<T: CoordinationService>(pub Arc<T>);
+                    struct TaskDetailSvc<T: TaskService>(pub Arc<T>);
                     impl<
-                        T: CoordinationService,
+                        T: TaskService,
                     > tonic::server::UnaryService<super::TaskDetailRequest>
                     for TaskDetailSvc<T> {
                         type Response = super::TaskDetailResponse;
@@ -584,7 +587,7 @@ pub mod coordination_service_server {
             }
         }
     }
-    impl<T: CoordinationService> Clone for CoordinationServiceServer<T> {
+    impl<T: TaskService> Clone for TaskServiceServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -596,7 +599,7 @@ pub mod coordination_service_server {
             }
         }
     }
-    impl<T: CoordinationService> Clone for _Inner<T> {
+    impl<T: TaskService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(Arc::clone(&self.0))
         }
@@ -606,9 +609,8 @@ pub mod coordination_service_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: CoordinationService> tonic::server::NamedService
-    for CoordinationServiceServer<T> {
-        const NAME: &'static str = "pb.CoordinationService";
+    impl<T: TaskService> tonic::server::NamedService for TaskServiceServer<T> {
+        const NAME: &'static str = "pb.TaskService";
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -641,8 +643,11 @@ pub struct JoinTaskResponse {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ExitTaskRequest {
-    ///   string code = 1;
-    ///   string app_id = 2;
+    #[prost(int64, tag = "1")]
+    pub task_id: i64,
+    /// 节点编号 必须唯一
+    #[prost(string, tag = "2")]
+    pub code: ::prost::alloc::string::String,
     #[prost(bool, tag = "3")]
     pub wait_node_balance: bool,
     /// 等到超时
@@ -682,12 +687,14 @@ pub struct PingResponse {
 pub struct SlotDistributionsRequest {
     #[prost(string, tag = "1")]
     pub node_code: ::prost::alloc::string::String,
+    #[prost(int64, tag = "2")]
+    pub task_id: i64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SlotDistributionsResponse {
     #[prost(int32, repeated, tag = "2")]
-    pub slots: ::prost::alloc::vec::Vec<i32>,
+    pub tags: ::prost::alloc::vec::Vec<i32>,
     /// 0 success
     #[prost(int32, tag = "254")]
     pub code: i32,

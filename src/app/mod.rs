@@ -3,7 +3,8 @@
 mod task_service;
 mod node_service;
 mod middles;
-mod entity;
+pub mod entity;
+mod service;
 
 use std::sync::Arc;
 use std::time::Duration;
@@ -32,7 +33,7 @@ pub async fn server(cfg:Config,exit:Exit,store : Arc<dyn EntityStore>,lock:Arc<d
     wd_log::log_debug_ln!("server start lister :{}",cfg.server.host_port);
     tonic::transport::Server::builder()
         .layer(layer)
-        .add_service(proto::coordination_service_server::CoordinationServiceServer::new(ts))
+        .add_service(proto::task_service_server::TaskServiceServer::new(ts))
         .add_service( proto::node_service_server::NodeServiceServer::new(ns))
         .serve(cfg.server.host_port.parse().unwrap()).await?;Ok(())
 }

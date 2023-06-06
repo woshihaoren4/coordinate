@@ -5,7 +5,7 @@ package pb;
 import "message.proto";
 import "google/api/annotations.proto";
 
-service  CoordinationService{
+service TaskService{
   rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse){
     option (google.api.http) = {
       post: "/api/v1/task/create"
@@ -46,14 +46,17 @@ message SearchTasksRequest{
   //todo
 }
 message SearchTasksResponse{
-  repeated Coordinator tasks = 1;
+  repeated Task tasks = 1;
+
+  int32 code = 254; //0 success
+  string message = 255;
 }
 message TaskDetailRequest{
   int64 task_id = 1;
   optional int32 app_id = 2; //从metadata的token解析
 }
 message TaskDetailResponse{
-  Coordinator task = 1;
+  Task task = 1;
 
   int32 code = 254; //0 success
   string message = 255;

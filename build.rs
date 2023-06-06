@@ -10,7 +10,7 @@ fn main() {
         .compile(
             &[
                 "./proto/message.proto",
-                "./proto/coordination_service.proto",
+                "./proto/task_service.proto",
                 "./proto/node_service.proto"
             ],
             &["proto"],
