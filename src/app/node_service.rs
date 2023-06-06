@@ -83,7 +83,7 @@ impl proto::node_service_server::NodeService for NodeService{
     }
 
     async fn ping(&self, _request: Request<PingRequest>) -> Result<Response<PingResponse>, Status> {
-        Err(Status::new(Code::Unknown,"todo"))
+        success!(PingResponse,version:0)
     }
 
     async fn slot_distributions(&self, request: Request<SlotDistributionsRequest>) -> Result<Response<SlotDistributionsResponse>, Status> {

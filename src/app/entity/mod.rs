@@ -1,5 +1,6 @@
 mod task_entity;
 mod node_entity;
+mod slot_dispatch_entity;
 
 use std::future::Future;
 use std::sync::Arc;
@@ -23,7 +24,7 @@ pub trait EntityStore:Send+Sync{
     async fn remove_node(&self, task_id: i64, code:&str) ->anyhow::Result<()>;
 
     async fn get_slot_detail(&self,task_id:i64) -> anyhow::Result<Vec<NodeEntity>>;
-    async fn save_slot_detail(&self,task_id:i64,ns:Vec<NodeEntity>) -> anyhow::Result<()>;
+    async fn save_slot_detail(&self,task_id:i64,ns:Vec<NodeEntity>) -> anyhow::Result<i64>;
     // async fn update_slot_info(&self,task_id:String,info:Box<dyn Entity>) ->anyhow::Result<()>;
 }
 
@@ -117,11 +118,11 @@ impl EntityStore for db::EtcdClient {
         }
     }
 
-    async fn save_slot_detail(&self, task_id: i64, ns: Vec<NodeEntity>) -> anyhow::Result<()> {
+    async fn save_slot_detail(&self, task_id: i64, ns: Vec<NodeEntity>) -> anyhow::Result<i64> {
         let val = serde_json::to_vec(&ns)?;
         let key = format!("{}/slot/{}",common::DB_VERSION,task_id);
-        self.client.put((key,val)).await?;
-        Ok(())
+        let resp = self.client.put((key,val)).await?;
+        Ok(resp.header.revision())
     }
 }
 

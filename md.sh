@@ -34,6 +34,6 @@ case $1 in
 ;;
 "clean")
   echo "cargo clean"
-  cargo clean
+  sudo cargo clean
 ;;
 esac
