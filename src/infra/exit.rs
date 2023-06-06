@@ -12,6 +12,7 @@ impl Exit {
     pub fn start(&self){
         self.status.store(1,Ordering::Relaxed);
     }
+    #[allow(dead_code)]
     pub fn over(&self){
         self.status.store(3,Ordering::Relaxed);
     }
@@ -24,6 +25,7 @@ impl Exit {
     pub fn status(&self)->isize{
         self.status.load(Ordering::Relaxed)
     }
+    #[allow(dead_code)]
     pub async fn wait_exit(&self,timeout:Duration)->anyhow::Result<()>{
         if self.status.load(Ordering::Relaxed) == 0 {
             return Ok(())
@@ -58,9 +60,9 @@ impl Exit {
         let sleep = tokio::time::sleep(timeout);
         tokio::pin!(sleep);
 
-        let status = self.task_count.clone();
+        let count = self.task_count.clone();
         let wait = async move {
-            while status.load(Ordering::Relaxed) != 0 {
+            while count.load(Ordering::Relaxed) != 0 {
                 tokio::time::sleep(Duration::from_secs(1)).await;
             }
         };

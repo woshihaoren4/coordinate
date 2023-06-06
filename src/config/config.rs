@@ -80,6 +80,7 @@ pub struct Config {
 }
 
 impl Config {
+    #[allow(dead_code)]
     pub fn from_file_by_path(path: impl AsRef<Path>) -> anyhow::Result<Config> {
         match wd_run::load_config(path) {
             Err(e) => return Err(anyhow::anyhow!(e)),

@@ -3,7 +3,6 @@ use std::time::Duration;
 use wd_run::{Context, TaskBuild,Task, TaskInfo};
 use wd_tools::PFArc;
 use crate::{app, config};
-use crate::app::entity;
 use crate::config::Config;
 use crate::infra::db;
 use crate::infra::exit::Exit;

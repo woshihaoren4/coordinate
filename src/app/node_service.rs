@@ -82,7 +82,7 @@ impl proto::node_service_server::NodeService for NodeService{
         }
     }
 
-    async fn ping(&self, request: Request<PingRequest>) -> Result<Response<PingResponse>, Status> {
+    async fn ping(&self, _request: Request<PingRequest>) -> Result<Response<PingResponse>, Status> {
         Err(Status::new(Code::Unknown,"todo"))
     }
 

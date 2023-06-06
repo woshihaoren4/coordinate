@@ -88,7 +88,7 @@ impl EntityStore for db::EtcdClient {
         list.ok()
     }
 
-    async fn get_nodes(&self, task_id: i64) -> anyhow::Result<Vec<String>> {
+    async fn get_nodes(&self, _task_id: i64) -> anyhow::Result<Vec<String>> {
 
         Ok(Vec::new())
     }
