@@ -1,5 +1,5 @@
-mod pg;
 mod etcd;
+mod pg;
 
-pub use pg::*;
 pub use etcd::*;
+pub use pg::*;

@@ -1,4 +1,4 @@
-pub const DB_VERSION:&'static str = "/api/v1";
+pub const DB_VERSION: &'static str = "/api/v1";
 
 #[macro_export]
 macro_rules! response {
@@ -34,5 +34,3 @@ macro_rules! server_err {
         response!($name,500,format!("server error:{:?}",$error),$($key:$value)*)
     };
 }
-
-

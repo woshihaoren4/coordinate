@@ -1,3 +1,3 @@
-pub mod middle;
-pub mod exit;
 pub mod db;
+pub mod exit;
+pub mod middle;

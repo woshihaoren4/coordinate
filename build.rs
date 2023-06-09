@@ -11,7 +11,7 @@ fn main() {
             &[
                 "./proto/message.proto",
                 "./proto/task_service.proto",
-                "./proto/node_service.proto"
+                "./proto/node_service.proto",
             ],
             &["proto"],
         )

@@ -54,16 +54,23 @@ field_generate!(Redis;
     max_conn_size,u64,20u64,"Redis::max_conn_size";
     max_idle_conn,u64,1u64,"Redis::max_idle_conn");
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(tag = "type")]
-pub enum DataSourceDriver {
-    Mysql,
-    Postgresql,
-    Mongo(MongoDb),
-}
+field_generate!(Check;
+    start_sec,i64,180i64,"Check::start_sec";
+    success_interval_sec,u64,180u64,"Check::success_interval_sec";
+    try_interval_sec,u64,180u64,"Check::try_interval_sec";
+    timeout,u64,300u64,"Check::timeout";
+    parallel,usize,10usize,"Check::parallel");
 
-field_generate!(DataSource;
-    driver,DataSourceDriver,DataSourceDriver::Mongo(MongoDb::default()),"DataSource::driver");
+// #[derive(Serialize, Deserialize, Clone, Debug)]
+// #[serde(tag = "type")]
+// pub enum DataSourceDriver {
+//     Mysql,
+//     Postgresql,
+//     Mongo(MongoDb),
+// }
+//
+// field_generate!(DataSource;
+//     driver,DataSourceDriver,DataSourceDriver::Mongo(MongoDb::default()),"DataSource::driver");
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
@@ -75,8 +82,10 @@ pub struct Config {
     // pub pgcfg: PGSql,
     #[serde(default = "Etcd::default")]
     pub etcd: Etcd,
-    #[serde(default = "Redis::default")]
-    pub cache: Redis,
+    // #[serde(default = "Redis::default")]
+    // pub cache: Redis,
+    #[serde(default = "Check::default")]
+    pub check: Check,
 }
 
 impl Config {

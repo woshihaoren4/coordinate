@@ -26,8 +26,8 @@ pub struct CustomInterceptor {
 
 impl CustomInterceptor {
     pub fn new<I>(inner: I) -> Self
-        where
-            I: LayerHyperInterceptor + 'static,
+    where
+        I: LayerHyperInterceptor + 'static,
     {
         let inner = Arc::new(inner);
         return Self { inner };
@@ -52,14 +52,14 @@ pub struct MyMiddleware<S> {
 }
 
 impl<S> tower::Service<hyper::Request<hyper::Body>> for MyMiddleware<S>
-    where
-        S: tower::Service<
+where
+    S: tower::Service<
             hyper::Request<hyper::Body>,
             Response = hyper::Response<tonic::body::BoxBody>,
         > + Clone
         + Send
         + 'static,
-        S::Future: Send + 'static,
+    S::Future: Send + 'static,
 {
     type Response = S::Response;
     type Error = S::Error;

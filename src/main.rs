@@ -1,8 +1,8 @@
 mod app;
-mod proto;
 mod cmd;
-mod infra;
 mod config;
+mod infra;
+mod proto;
 
 #[tokio::main]
 async fn main() {
