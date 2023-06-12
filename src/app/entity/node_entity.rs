@@ -9,6 +9,7 @@ pub struct NodeEntity {
     pub status: i32,
     pub tags: Vec<i32>,
     pub last_ping_time: i64,
+    pub slot_version: i64,
 
     pub created_at: i64,
 }
@@ -34,6 +35,7 @@ impl From<JoinTaskRequest> for NodeEntity {
             tags: vec![],
             last_ping_time: t,
             created_at: t,
+            slot_version:0,
         }
     }
 }

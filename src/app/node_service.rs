@@ -40,7 +40,7 @@ impl proto::node_service_server::NodeService for NodeService {
                 }
             }
 
-            self.store.register_nodes(tid, &node).await?;
+            self.store.save_node(tid, &node).await?;
 
             let ns = service::SoltRebalance::new(&task.slot, ns).join(node);
 
@@ -106,8 +106,29 @@ impl proto::node_service_server::NodeService for NodeService {
         }
     }
 
-    async fn ping(&self, _request: Request<PingRequest>) -> Result<Response<PingResponse>, Status> {
-        success!(PingResponse,version:0)
+    async fn ping(&self, request: Request<PingRequest>) -> Result<Response<PingResponse>, Status> {
+        let task_id = request.get_ref().task_id;
+        let code = request.into_inner().code;
+
+        let node = self.store.node(task_id,code).await;
+        let mut node = match node {
+            Ok(o)=> o,
+            Err(e)=> server_err!(PingResponse,e,version:0)
+        };
+
+        let version = match self.store.get_slot_revision(task_id).await {
+            Ok(ver) => ver,
+            Err(err) => server_err!(PingResponse,err,version:0)
+        };
+
+        node.slot_version = version;
+        node.last_ping_time = wd_tools::time::utc_timestamp();
+
+        if let Err(err) = self.store.save_node(task_id,&node).await {
+            server_err!(PingResponse,err,version:0)
+        }
+
+        success!(PingResponse,version:version)
     }
 
     async fn slot_distributions(

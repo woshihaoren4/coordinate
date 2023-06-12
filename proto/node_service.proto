@@ -63,11 +63,11 @@ message ExitTaskResponse{
 }
 
 message PingRequest{
-//  string code = 1;
-//  string app_id = 2;
+  int64 task_id = 1;
+  string code = 2;
 }
 message PingResponse{
-  int32 version = 1;
+  int64 version = 1;
 
   int32 code = 254; //0 success
   string message = 255;

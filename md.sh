@@ -18,7 +18,7 @@ case $1 in
 #  rm -rf $pb_path/*.rs
 
   echo "cargo run --bin pb-build"
-  cargo run --bin pb-build || exit 2
+  sudo cargo run --bin pb-build || exit 2
 #
 #  echo 'ls $pb_path/*.rs | sed s/$*.rs//g | cut -d"/" -f3-4 | sed "s/pb\//mod /g"'
 #  ls $pb_path/*.rs | sed s/$*.rs//g | cut -d"/" -f3-4 | sed "s/pb\//mod /g" > "$pb_path/mod.rs"

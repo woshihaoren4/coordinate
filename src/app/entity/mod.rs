@@ -19,11 +19,13 @@ pub trait EntityStore: Send + Sync {
     async fn tasks(&self, page: i32, size: i32) -> anyhow::Result<Vec<TaskEntity>>;
 
     async fn get_nodes(&self, task_id: i64) -> anyhow::Result<Vec<NodeEntity>>;
-    async fn register_nodes(&self, task_id: i64, node: &NodeEntity) -> anyhow::Result<()>;
+    async fn node(&self,task_id: i64,code:String)-> anyhow::Result<NodeEntity>;
+    async fn save_node(&self, task_id: i64, node: &NodeEntity) -> anyhow::Result<()>;
     async fn remove_node(&self, task_id: i64, code: &str) -> anyhow::Result<()>;
 
     async fn get_slot_detail(&self, task_id: i64) -> anyhow::Result<Vec<NodeEntity>>;
     async fn save_slot_detail(&self, task_id: i64, ns: Vec<NodeEntity>) -> anyhow::Result<i64>;
+    async fn get_slot_revision(&self,task_id:i64) -> anyhow::Result<i64>;
     // async fn update_slot_info(&self,task_id:String,info:Box<dyn Entity>) ->anyhow::Result<()>;
 }
 
@@ -112,7 +114,17 @@ impl EntityStore for db::EtcdClient {
         list.ok()
     }
 
-    async fn register_nodes(&self, task_id: i64, node: &NodeEntity) -> anyhow::Result<()> {
+    async fn node(&self,task_id: i64, code: String) -> anyhow::Result<NodeEntity> {
+        let key = format!("{}/node/{}/{}", common::DB_VERSION, task_id,code);
+        let resp = self.client.get(key).await?;
+        if resp.kvs.len() <= 0 {
+            return anyhow::anyhow!("record not found").err()
+        }
+        NodeEntity::from(&resp.kvs[0].value).ok()
+    }
+
+    async fn save_node(&self, task_id: i64, node: &NodeEntity) -> anyhow::Result<()> {
+        let lease = self.client.grant_lease(Duration::from_secs(60*3)).await?;
         let key = format!(
             "{}/node/{}/{}",
             common::DB_VERSION,
@@ -120,7 +132,7 @@ impl EntityStore for db::EtcdClient {
             node.code.as_str()
         );
         let value = node.to_string();
-        self.client.put((key, value)).await?;
+        self.client.put(PutRequest::from((key, value)).lease(lease.id)).await?;
         Ok(())
     }
 
@@ -147,6 +159,12 @@ impl EntityStore for db::EtcdClient {
         let key = format!("{}/slot/{}", common::DB_VERSION, task_id);
         let resp = self.client.put((key, val)).await?;
         Ok(resp.header.revision())
+    }
+
+    async fn get_slot_revision(&self, task_id: i64) -> anyhow::Result<i64> {
+        let key = format!("{}/slot/{}", common::DB_VERSION, task_id);
+        let resp = self.client.get(key).await?;
+        resp.header.revision().ok()
     }
 }
 
