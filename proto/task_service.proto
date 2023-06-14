@@ -25,7 +25,6 @@ service TaskService{
 }
 
 message CreateTaskRequest{
-  optional int32 app_id = 2; //从metadata的token解析
   string name = 3;
 
   Strategy strategy = 51;   //策略
@@ -42,7 +41,6 @@ message CreateTaskResponse{
 }
 
 message SearchTasksRequest{
-  optional int32 app_id = 2; //从metadata的token解析
   //todo
 }
 message SearchTasksResponse{
@@ -53,7 +51,6 @@ message SearchTasksResponse{
 }
 message TaskDetailRequest{
   int64 task_id = 1;
-  optional int32 app_id = 2; //从metadata的token解析
 }
 message TaskDetailResponse{
   Task task = 1;

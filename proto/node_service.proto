@@ -37,7 +37,6 @@ service NodeService{
 }
 
 message JoinTaskRequest{
-  int32 app_id = 1; //在token中处理
   int64 task_id = 2;
 
   string code = 3; //节点编号 必须唯一
@@ -77,7 +76,8 @@ message SlotDistributionsRequest{
   int64 task_id = 2;
 }
 message SlotDistributionsResponse{
-  repeated int32 tags = 2;
+  repeated int32 tags = 1;
+  int64 version = 2;
 
   int32 code = 254; //0 success
   string message = 255;

@@ -4,7 +4,6 @@ package pb;
 
 message Task{
   int64 id = 1;
-  int32 app_id = 2;
   string name = 3;
   int32 version = 4; //变更版本号
 
@@ -18,7 +17,7 @@ message Task{
 
 message Slot{//槽方式
   int32 count = 1; // 槽数量
-  repeated SlotAlloc slot_alloc = 2; //槽分配情况
+//  repeated SlotAlloc slot_alloc = 2; //槽分配情况
   int32 node_max_count = 3; //单节点最大
   int32 node_min_count = 4; //单节点最小
 }

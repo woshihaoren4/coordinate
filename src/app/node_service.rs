@@ -32,7 +32,7 @@ impl proto::node_service_server::NodeService for NodeService {
 
         let handle = async move {
             let task = store.get_task(tid).await?;
-            let ns = store.get_slot_detail(tid).await?;
+            let (_, ns) = store.get_slot_detail(tid).await?;
             for i in ns.iter() {
                 if i.code == node.code {
                     //已存在则不重复插入
@@ -79,7 +79,7 @@ impl proto::node_service_server::NodeService for NodeService {
 
         let handle = async move {
             let task = store.get_task(tid).await?;
-            let ns = store.get_slot_detail(tid).await?;
+            let (_, ns) = store.get_slot_detail(tid).await?;
             self.store.remove_node(tid, code.as_str()).await?;
             let ns = service::SoltRebalance::new(&task.slot, ns).remove(code);
             self.store.save_slot_detail(tid, ns).await?;
@@ -109,26 +109,31 @@ impl proto::node_service_server::NodeService for NodeService {
     async fn ping(&self, request: Request<PingRequest>) -> Result<Response<PingResponse>, Status> {
         let task_id = request.get_ref().task_id;
         let code = request.into_inner().code;
+        let nt = wd_tools::time::utc_timestamp();
 
-        let node = self.store.node(task_id,code).await;
+        let node = self.store.node(task_id, code).await;
         let mut node = match node {
-            Ok(o)=> o,
-            Err(e)=> server_err!(PingResponse,e,version:0)
+            Ok(o) => o,
+            Err(e) => server_err!(PingResponse,e,version:0),
         };
+
+        if nt - node.last_ping_time < 10 {
+            bad_request!(PingResponse,"请求过于频繁，建议每次ping请求间隔30s".into(),version:0)
+        }
 
         let version = match self.store.get_slot_revision(task_id).await {
             Ok(ver) => ver,
-            Err(err) => server_err!(PingResponse,err,version:0)
+            Err(err) => server_err!(PingResponse,err,version:0),
         };
 
         node.slot_version = version;
         node.last_ping_time = wd_tools::time::utc_timestamp();
 
-        if let Err(err) = self.store.save_node(task_id,&node).await {
+        if let Err(err) = self.store.save_node(task_id, &node).await {
             server_err!(PingResponse,err,version:0)
         }
 
-        success!(PingResponse,version:version)
+        success!(PingResponse, version: version)
     }
 
     async fn slot_distributions(
@@ -138,20 +143,21 @@ impl proto::node_service_server::NodeService for NodeService {
         let tid = request.get_ref().task_id;
         let code = request.get_ref().node_code.clone();
 
-        let ns = match self.store.get_slot_detail(tid).await {
+        let (v, ns) = match self.store.get_slot_detail(tid).await {
             Ok(o) => o,
-            Err(e) => server_err!(SlotDistributionsResponse, e, tags: vec![]),
+            Err(e) => server_err!(SlotDistributionsResponse, e, tags: vec![],version:0),
         };
 
         for i in ns.into_iter() {
             if i.code == code {
-                success!(SlotDistributionsResponse,tags:i.tags)
+                success!(SlotDistributionsResponse,tags:i.tags,version:v)
             }
         }
         bad_request!(
             SlotDistributionsResponse,
             format!("node not found"),
-            tags: vec![]
+            tags: vec![],
+            version: v
         )
     }
 }

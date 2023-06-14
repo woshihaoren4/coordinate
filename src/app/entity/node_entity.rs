@@ -14,6 +14,12 @@ pub struct NodeEntity {
     pub created_at: i64,
 }
 
+impl PartialEq<Self> for NodeEntity {
+    fn eq(&self, other: &Self) -> bool {
+        self.code == other.code
+    }
+}
+
 impl ToString for NodeEntity {
     fn to_string(&self) -> String {
         serde_json::to_string(self).expect("can not to here")
@@ -35,7 +41,7 @@ impl From<JoinTaskRequest> for NodeEntity {
             tags: vec![],
             last_ping_time: t,
             created_at: t,
-            slot_version:0,
+            slot_version: 0,
         }
     }
 }

@@ -12,6 +12,9 @@ impl SoltRebalance<'_> {
         SoltRebalance { slot: task, nodes }
     }
     pub fn balance(self) -> Vec<NodeEntity> {
+        if self.nodes.len() <= 0 {
+            return vec![];
+        }
         let slot = self.slot;
         let ns = self.nodes;
 
@@ -131,7 +134,6 @@ impl SoltRebalance<'_> {
 mod test {
     use crate::app::entity::{NodeEntity, TaskEntity, TaskSlot};
     use crate::app::service::rebalance::SoltRebalance;
-    use sqlx::encode::IsNull::No;
     use std::collections::HashMap;
 
     #[test]

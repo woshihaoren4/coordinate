@@ -1,5 +1,5 @@
 use crate::app::entity;
-use crate::app::entity::{EntityStore, GlobalLock, TaskEntity};
+use crate::app::entity::{EntityStore, GlobalLock, NodeEntity, TaskEntity};
 use crate::app::service::SoltRebalance;
 use crate::config;
 use crate::infra::exit::Exit;
@@ -84,6 +84,7 @@ impl AutoScan {
                 wd_log::log_error_ln!("auto scan unlock：{}", e);
             }
             tokio::time::sleep(self.success_interval.clone()).await;
+            wd_log::log_debug_ln!("auto scan , rebalance over");
         }
     }
 
@@ -114,7 +115,7 @@ impl AutoScan {
                 //检查不通过，则需要重排
                 wd_log::log_debug_ln!("task[{}] check failed, need rebalance", i.task_id);
                 let rebalance = async move {
-                    let ns = store.get_nodes(i.task_id).await?;
+                    let ns = AutoScan::get_nodes(store.clone(), i.task_id).await?;
                     let ns = SoltRebalance::new(&i.slot, ns).balance();
 
                     store.save_slot_detail(i.task_id, ns).await?;
@@ -149,24 +150,36 @@ impl AutoScan {
             return false.ok();
         }
         let ns = store.get_nodes(task.task_id).await?;
-        //节点全死不检查
-        if ns.is_empty() {
-            return false.ok();
-        }
+        // //节点全死
+        // if ns.is_empty() {
+        //     return true.ok();
+        // }
         //节点变化 则重排
-        let ss = store.get_slot_detail(task.task_id).await?;
+        let (_, ss) = store.get_slot_detail(task.task_id).await?;
         if ns.len() != ss.len() {
             return true.ok();
         }
-        for i in ns.iter() {
+        'lp: for i in ns.iter() {
             for j in ss.iter() {
                 if i.code == j.code {
-                    continue;
+                    continue 'lp;
                 }
             }
             return true.ok();
         }
 
         return false.ok();
+    }
+    async fn get_nodes(
+        store: Arc<dyn EntityStore>,
+        task_id: i64,
+    ) -> anyhow::Result<Vec<NodeEntity>> {
+        let ns = store.get_nodes(task_id).await?;
+        if ns.is_empty() {
+            return ns.ok();
+        }
+        let (_, mut ss) = store.get_slot_detail(task_id).await?;
+        ss.retain(|x| ns.contains(x));
+        ss.ok()
     }
 }

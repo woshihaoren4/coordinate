@@ -5,7 +5,7 @@ use wd_tools::PFSome;
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct TaskEntity {
     pub task_id: i64,
-    pub app_id: i32,
+    // pub app_id: i32,
     pub task_name: String,
     pub version: i32,
     pub secret: String,
@@ -41,7 +41,7 @@ impl From<CreateTaskRequest> for TaskEntity {
         let nt = wd_tools::time::utc_timestamp();
         TaskEntity {
             task_id: wd_tools::snowflake_id(),
-            app_id: value.app_id.unwrap_or(1),
+            // app_id: value.app_id.unwrap_or(1),
             task_name: value.name,
             version: 0,
             secret: wd_tools::uuid::v4(),
@@ -62,7 +62,7 @@ impl Into<Task> for TaskEntity {
     fn into(self) -> Task {
         Task {
             id: self.task_id,
-            app_id: self.app_id,
+            // app_id: self.app_id,
             name: self.task_name,
             version: self.version,
             nodes: vec![],
@@ -72,7 +72,7 @@ impl Into<Task> for TaskEntity {
             .some(),
             slot: Slot {
                 count: self.slot.slot_count,
-                slot_alloc: vec![],
+                // slot_alloc: vec![],
                 node_max_count: self.slot.node_max_count,
                 node_min_count: self.slot.node_max_count,
             }
