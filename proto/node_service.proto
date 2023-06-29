@@ -74,10 +74,13 @@ message PingResponse{
 message SlotDistributionsRequest{
   string node_code = 1;
   int64 task_id = 2;
+  bool all_node_info = 3;
 }
 message SlotDistributionsResponse{
   repeated int32 tags = 1;
   int64 version = 2;
+
+  repeated SlotAlloc nodes_slot = 100; //槽分配情况
 
   int32 code = 254; //0 success
   string message = 255;

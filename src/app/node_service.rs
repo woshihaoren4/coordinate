@@ -3,7 +3,7 @@ use crate::app::{entity, service};
 use crate::proto;
 use crate::proto::{
     ExitTaskRequest, ExitTaskResponse, JoinTaskRequest, JoinTaskResponse, PingRequest,
-    PingResponse, SlotDistributionsRequest, SlotDistributionsResponse,
+    PingResponse, SlotAlloc, SlotDistributionsRequest, SlotDistributionsResponse,
 };
 use std::sync::Arc;
 use std::time::Duration;
@@ -145,19 +145,31 @@ impl proto::node_service_server::NodeService for NodeService {
 
         let (v, ns) = match self.store.get_slot_detail(tid).await {
             Ok(o) => o,
-            Err(e) => server_err!(SlotDistributionsResponse, e, tags: vec![],version:0),
+            Err(e) => {
+                server_err!(SlotDistributionsResponse, e, tags: vec![],version:0,nodes_slot: vec![])
+            }
         };
 
-        for i in ns.into_iter() {
-            if i.code == code {
-                success!(SlotDistributionsResponse,tags:i.tags,version:v)
+        let nodes: Vec<SlotAlloc> = ns
+            .into_iter()
+            .map(|x| SlotAlloc {
+                node_code: x.code,
+                slots: x.tags,
+            })
+            .collect();
+
+        for i in nodes.iter() {
+            if i.node_code == code {
+                success!(SlotDistributionsResponse,version: v,tags:i.slots.clone(),nodes_slot:nodes)
             }
         }
+
         bad_request!(
             SlotDistributionsResponse,
             format!("node not found"),
             tags: vec![],
-            version: v
+            version: v,
+            nodes_slot: vec![]
         )
     }
 }

@@ -621,6 +621,8 @@ pub struct SlotDistributionsRequest {
     pub node_code: ::prost::alloc::string::String,
     #[prost(int64, tag = "2")]
     pub task_id: i64,
+    #[prost(bool, tag = "3")]
+    pub all_node_info: bool,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -629,6 +631,9 @@ pub struct SlotDistributionsResponse {
     pub tags: ::prost::alloc::vec::Vec<i32>,
     #[prost(int64, tag = "2")]
     pub version: i64,
+    /// 槽分配情况
+    #[prost(message, repeated, tag = "100")]
+    pub nodes_slot: ::prost::alloc::vec::Vec<SlotAlloc>,
     /// 0 success
     #[prost(int32, tag = "254")]
     pub code: i32,
