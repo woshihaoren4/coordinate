@@ -37,7 +37,7 @@ pub struct CleanEntity {
 #[wd_run::async_trait]
 impl Task for CleanEntity {
     async fn run(&self) -> anyhow::Result<()> {
-        let client = db::EtcdClient::init(self.cfg.etcd.endpoints.clone()).await?;
+        let client = db::EtcdClient::init(self.cfg.etcd.clone()).await?;
         entity::clean_tasks(client).await?;
         Ok(())
     }

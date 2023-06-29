@@ -161,8 +161,8 @@ pub struct TaskDetailResponse {
 /// Generated client implementations.
 pub mod task_service_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
     pub struct TaskServiceClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -206,8 +206,9 @@ pub mod task_service_client {
                     <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
-                Into<StdError> + Send + Sync,
+            <T as tonic::codegen::Service<
+                http::Request<tonic::body::BoxBody>,
+            >>::Error: Into<StdError> + Send + Sync,
         {
             TaskServiceClient::new(InterceptedService::new(inner, interceptor))
         }
@@ -245,34 +246,47 @@ pub mod task_service_client {
         pub async fn create_task(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateTaskRequest>,
-        ) -> std::result::Result<tonic::Response<super::CreateTaskResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+        ) -> std::result::Result<
+            tonic::Response<super::CreateTaskResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/pb.TaskService/CreateTask");
+            let path = http::uri::PathAndQuery::from_static(
+                "/pb.TaskService/CreateTask",
+            );
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("pb.TaskService", "CreateTask"));
+            req.extensions_mut().insert(GrpcMethod::new("pb.TaskService", "CreateTask"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn search_tasks(
             &mut self,
             request: impl tonic::IntoRequest<super::SearchTasksRequest>,
-        ) -> std::result::Result<tonic::Response<super::SearchTasksResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+        ) -> std::result::Result<
+            tonic::Response<super::SearchTasksResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/pb.TaskService/SearchTasks");
+            let path = http::uri::PathAndQuery::from_static(
+                "/pb.TaskService/SearchTasks",
+            );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(GrpcMethod::new("pb.TaskService", "SearchTasks"));
@@ -281,19 +295,25 @@ pub mod task_service_client {
         pub async fn task_detail(
             &mut self,
             request: impl tonic::IntoRequest<super::TaskDetailRequest>,
-        ) -> std::result::Result<tonic::Response<super::TaskDetailResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+        ) -> std::result::Result<
+            tonic::Response<super::TaskDetailResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/pb.TaskService/TaskDetail");
+            let path = http::uri::PathAndQuery::from_static(
+                "/pb.TaskService/TaskDetail",
+            );
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("pb.TaskService", "TaskDetail"));
+            req.extensions_mut().insert(GrpcMethod::new("pb.TaskService", "TaskDetail"));
             self.inner.unary(req, path, codec).await
         }
     }
@@ -308,15 +328,24 @@ pub mod task_service_server {
         async fn create_task(
             &self,
             request: tonic::Request<super::CreateTaskRequest>,
-        ) -> std::result::Result<tonic::Response<super::CreateTaskResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::CreateTaskResponse>,
+            tonic::Status,
+        >;
         async fn search_tasks(
             &self,
             request: tonic::Request<super::SearchTasksRequest>,
-        ) -> std::result::Result<tonic::Response<super::SearchTasksResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::SearchTasksResponse>,
+            tonic::Status,
+        >;
         async fn task_detail(
             &self,
             request: tonic::Request<super::TaskDetailRequest>,
-        ) -> std::result::Result<tonic::Response<super::TaskDetailResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::TaskDetailResponse>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct TaskServiceServer<T: TaskService> {
@@ -341,7 +370,10 @@ pub mod task_service_server {
                 max_encoding_message_size: None,
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -397,9 +429,15 @@ pub mod task_service_server {
                 "/pb.TaskService/CreateTask" => {
                     #[allow(non_camel_case_types)]
                     struct CreateTaskSvc<T: TaskService>(pub Arc<T>);
-                    impl<T: TaskService> tonic::server::UnaryService<super::CreateTaskRequest> for CreateTaskSvc<T> {
+                    impl<
+                        T: TaskService,
+                    > tonic::server::UnaryService<super::CreateTaskRequest>
+                    for CreateTaskSvc<T> {
                         type Response = super::CreateTaskResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::CreateTaskRequest>,
@@ -435,15 +473,23 @@ pub mod task_service_server {
                 "/pb.TaskService/SearchTasks" => {
                     #[allow(non_camel_case_types)]
                     struct SearchTasksSvc<T: TaskService>(pub Arc<T>);
-                    impl<T: TaskService> tonic::server::UnaryService<super::SearchTasksRequest> for SearchTasksSvc<T> {
+                    impl<
+                        T: TaskService,
+                    > tonic::server::UnaryService<super::SearchTasksRequest>
+                    for SearchTasksSvc<T> {
                         type Response = super::SearchTasksResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::SearchTasksRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).search_tasks(request).await };
+                            let fut = async move {
+                                (*inner).search_tasks(request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -473,9 +519,15 @@ pub mod task_service_server {
                 "/pb.TaskService/TaskDetail" => {
                     #[allow(non_camel_case_types)]
                     struct TaskDetailSvc<T: TaskService>(pub Arc<T>);
-                    impl<T: TaskService> tonic::server::UnaryService<super::TaskDetailRequest> for TaskDetailSvc<T> {
+                    impl<
+                        T: TaskService,
+                    > tonic::server::UnaryService<super::TaskDetailRequest>
+                    for TaskDetailSvc<T> {
                         type Response = super::TaskDetailResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::TaskDetailRequest>,
@@ -508,14 +560,18 @@ pub mod task_service_server {
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    Ok(http::Response::builder()
-                        .status(200)
-                        .header("grpc-status", "12")
-                        .header("content-type", "application/grpc")
-                        .body(empty_body())
-                        .unwrap())
-                }),
+                _ => {
+                    Box::pin(async move {
+                        Ok(
+                            http::Response::builder()
+                                .status(200)
+                                .header("grpc-status", "12")
+                                .header("content-type", "application/grpc")
+                                .body(empty_body())
+                                .unwrap(),
+                        )
+                    })
+                }
             }
         }
     }
@@ -643,8 +699,8 @@ pub struct SlotDistributionsResponse {
 /// Generated client implementations.
 pub mod node_service_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
     pub struct NodeServiceClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -688,8 +744,9 @@ pub mod node_service_client {
                     <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
-                Into<StdError> + Send + Sync,
+            <T as tonic::codegen::Service<
+                http::Request<tonic::body::BoxBody>,
+            >>::Error: Into<StdError> + Send + Sync,
         {
             NodeServiceClient::new(InterceptedService::new(inner, interceptor))
         }
@@ -728,36 +785,46 @@ pub mod node_service_client {
         pub async fn join_task(
             &mut self,
             request: impl tonic::IntoRequest<super::JoinTaskRequest>,
-        ) -> std::result::Result<tonic::Response<super::JoinTaskResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+        ) -> std::result::Result<
+            tonic::Response<super::JoinTaskResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/pb.NodeService/JoinTask");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("pb.NodeService", "JoinTask"));
+            req.extensions_mut().insert(GrpcMethod::new("pb.NodeService", "JoinTask"));
             self.inner.unary(req, path, codec).await
         }
         /// 节点退出任务集
         pub async fn exit_task(
             &mut self,
             request: impl tonic::IntoRequest<super::ExitTaskRequest>,
-        ) -> std::result::Result<tonic::Response<super::ExitTaskResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+        ) -> std::result::Result<
+            tonic::Response<super::ExitTaskResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/pb.NodeService/ExitTask");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("pb.NodeService", "ExitTask"));
+            req.extensions_mut().insert(GrpcMethod::new("pb.NodeService", "ExitTask"));
             self.inner.unary(req, path, codec).await
         }
         /// 节点保活
@@ -765,33 +832,42 @@ pub mod node_service_client {
             &mut self,
             request: impl tonic::IntoRequest<super::PingRequest>,
         ) -> std::result::Result<tonic::Response<super::PingResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/pb.NodeService/Ping");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("pb.NodeService", "Ping"));
+            req.extensions_mut().insert(GrpcMethod::new("pb.NodeService", "Ping"));
             self.inner.unary(req, path, codec).await
         }
         /// 槽分配方式任务查询
         pub async fn slot_distributions(
             &mut self,
             request: impl tonic::IntoRequest<super::SlotDistributionsRequest>,
-        ) -> std::result::Result<tonic::Response<super::SlotDistributionsResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
+        ) -> std::result::Result<
+            tonic::Response<super::SlotDistributionsResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/pb.NodeService/SlotDistributions");
+            let path = http::uri::PathAndQuery::from_static(
+                "/pb.NodeService/SlotDistributions",
+            );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(GrpcMethod::new("pb.NodeService", "SlotDistributions"));
@@ -810,12 +886,18 @@ pub mod node_service_server {
         async fn join_task(
             &self,
             request: tonic::Request<super::JoinTaskRequest>,
-        ) -> std::result::Result<tonic::Response<super::JoinTaskResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::JoinTaskResponse>,
+            tonic::Status,
+        >;
         /// 节点退出任务集
         async fn exit_task(
             &self,
             request: tonic::Request<super::ExitTaskRequest>,
-        ) -> std::result::Result<tonic::Response<super::ExitTaskResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::ExitTaskResponse>,
+            tonic::Status,
+        >;
         /// 节点保活
         async fn ping(
             &self,
@@ -825,7 +907,10 @@ pub mod node_service_server {
         async fn slot_distributions(
             &self,
             request: tonic::Request<super::SlotDistributionsRequest>,
-        ) -> std::result::Result<tonic::Response<super::SlotDistributionsResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::SlotDistributionsResponse>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct NodeServiceServer<T: NodeService> {
@@ -850,7 +935,10 @@ pub mod node_service_server {
                 max_encoding_message_size: None,
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -906,9 +994,15 @@ pub mod node_service_server {
                 "/pb.NodeService/JoinTask" => {
                     #[allow(non_camel_case_types)]
                     struct JoinTaskSvc<T: NodeService>(pub Arc<T>);
-                    impl<T: NodeService> tonic::server::UnaryService<super::JoinTaskRequest> for JoinTaskSvc<T> {
+                    impl<
+                        T: NodeService,
+                    > tonic::server::UnaryService<super::JoinTaskRequest>
+                    for JoinTaskSvc<T> {
                         type Response = super::JoinTaskResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::JoinTaskRequest>,
@@ -944,9 +1038,15 @@ pub mod node_service_server {
                 "/pb.NodeService/ExitTask" => {
                     #[allow(non_camel_case_types)]
                     struct ExitTaskSvc<T: NodeService>(pub Arc<T>);
-                    impl<T: NodeService> tonic::server::UnaryService<super::ExitTaskRequest> for ExitTaskSvc<T> {
+                    impl<
+                        T: NodeService,
+                    > tonic::server::UnaryService<super::ExitTaskRequest>
+                    for ExitTaskSvc<T> {
                         type Response = super::ExitTaskResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ExitTaskRequest>,
@@ -982,9 +1082,13 @@ pub mod node_service_server {
                 "/pb.NodeService/Ping" => {
                     #[allow(non_camel_case_types)]
                     struct PingSvc<T: NodeService>(pub Arc<T>);
-                    impl<T: NodeService> tonic::server::UnaryService<super::PingRequest> for PingSvc<T> {
+                    impl<T: NodeService> tonic::server::UnaryService<super::PingRequest>
+                    for PingSvc<T> {
                         type Response = super::PingResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::PingRequest>,
@@ -1020,18 +1124,23 @@ pub mod node_service_server {
                 "/pb.NodeService/SlotDistributions" => {
                     #[allow(non_camel_case_types)]
                     struct SlotDistributionsSvc<T: NodeService>(pub Arc<T>);
-                    impl<T: NodeService>
-                        tonic::server::UnaryService<super::SlotDistributionsRequest>
-                        for SlotDistributionsSvc<T>
-                    {
+                    impl<
+                        T: NodeService,
+                    > tonic::server::UnaryService<super::SlotDistributionsRequest>
+                    for SlotDistributionsSvc<T> {
                         type Response = super::SlotDistributionsResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::SlotDistributionsRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).slot_distributions(request).await };
+                            let fut = async move {
+                                (*inner).slot_distributions(request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -1058,14 +1167,18 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    Ok(http::Response::builder()
-                        .status(200)
-                        .header("grpc-status", "12")
-                        .header("content-type", "application/grpc")
-                        .body(empty_body())
-                        .unwrap())
-                }),
+                _ => {
+                    Box::pin(async move {
+                        Ok(
+                            http::Response::builder()
+                                .status(200)
+                                .header("grpc-status", "12")
+                                .header("content-type", "application/grpc")
+                                .body(empty_body())
+                                .unwrap(),
+                        )
+                    })
+                }
             }
         }
     }

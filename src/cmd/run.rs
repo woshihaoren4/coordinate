@@ -43,7 +43,7 @@ impl Task for RunEntity {
     async fn run(&self) -> anyhow::Result<()> {
         self.life.start();
 
-        let client = db::EtcdClient::init(self.cfg.etcd.endpoints.clone())
+        let client = db::EtcdClient::init(self.cfg.etcd.clone())
             .await?
             .arc();
 

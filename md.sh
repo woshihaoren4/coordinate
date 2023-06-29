@@ -25,15 +25,34 @@ case $1 in
 
   ;;
 "run")
-  echo "cargo run --bin server -- run"
-  sudo cargo run --bin server -- run
+  echo "cargo run --bin coordination -- run"
+  sudo cargo run --bin coordination -- run
 ;;
 "clean_task")
-  echo "cargo run --bin server -- clean"
-  sudo cargo run --bin server -- clean
+  echo "cargo run --bin coordination -- clean"
+  sudo cargo run --bin coordination -- clean
 ;;
 "clean")
   echo "cargo clean"
   sudo cargo clean
+;;
+"build_docker")
+
+if [ ! -e ".cargo/config.toml" ] ; then
+  mkdir .cargo;touch .cargo/config.toml
+fi
+
+cat>".cargo/config.toml" <<EOF
+[target.x86_64-unknown-linux-musl]
+linker = "x86_64-linux-musl-gcc"
+EOF
+
+cargo build --release --bin=coordination --target=x86_64-unknown-linux-musl
+chmod +x target/x86_64-unknown-linux-musl/release/coordination
+tag="wdshihaoren/coordination:v0.0.1"
+docker build -f ./Dockerfile -t "$tag"  .
+docker push "$tag"
+rm -rf .cargo
+
 ;;
 esac

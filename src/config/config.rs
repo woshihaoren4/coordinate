@@ -32,7 +32,7 @@ macro_rules! field_generate {
 
 field_generate!(Server;
     name,String,String::from("dispatch"),"Server::name";
-    host_port,String,String::from("0.0.0.0:666"),"Server::host_port");
+    host_port,String,String::from("0.0.0.0:6666"),"Server::host_port");
 
 field_generate!(MongoDb;
     url,String,String::from("mongodb://user:passwd@127.0.0.1:123/db_name"),"MongoDb::url";
@@ -45,8 +45,8 @@ field_generate!(PGSql;
 
 field_generate!(Etcd;
     endpoints,Vec<String>,vec!["http://127.0.0.1:12379".to_string()],"Etcd::endpoints";
-    user,String,String::from("root"),"Etcd::user";
-    passwd,String,String::from("123"),"Etcd::passwd";
+    user,String,String::from(""),"Etcd::user";
+    passwd,String,String::from(""),"Etcd::passwd";
     version,String,String::from("api/v1/"),"Etcd::version");
 
 field_generate!(Redis;
