@@ -1,10 +1,7 @@
 use crate::app::entity::{EntityStore, GlobalLock};
 use crate::app::{entity, service};
 use crate::proto;
-use crate::proto::{
-    ExitTaskRequest, ExitTaskResponse, JoinTaskRequest, JoinTaskResponse, PingRequest,
-    PingResponse, SlotAlloc, SlotDistributionsRequest, SlotDistributionsResponse,
-};
+use crate::proto::{ExitTaskRequest, ExitTaskResponse, JoinTaskRequest, JoinTaskResponse, PingRequest, PingResponse, SlotAlloc, SlotDistributionsRequest, SlotDistributionsResponse, UpdateNodeVersionRequest, UpdateNodeVersionResponse};
 use std::sync::Arc;
 use std::time::Duration;
 use tonic::{Request, Response, Status};
@@ -121,19 +118,49 @@ impl proto::node_service_server::NodeService for NodeService {
             bad_request!(PingResponse,"请求过于频繁，建议每次ping请求间隔30s".into(),version:0)
         }
 
-        let version = match self.store.get_slot_revision(task_id).await {
-            Ok(ver) => ver,
-            Err(err) => server_err!(PingResponse,err,version:0),
-        };
+        // let version = match self.store.get_slot_revision(task_id).await {
+        //     Ok(ver) => ver,
+        //     Err(err) => server_err!(PingResponse,err,version:0),
+        // };
 
-        node.slot_version = version;
-        node.last_ping_time = wd_tools::time::utc_timestamp();
+        // node.slot_version = version;
+        let version = node.slot_version;
+        node.last_ping_time = nt;
 
         if let Err(err) = self.store.save_node(task_id, &node).await {
             server_err!(PingResponse,err,version:0)
         }
 
         success!(PingResponse, version: version)
+    }
+
+    async fn update_node_version(&self, request: Request<UpdateNodeVersionRequest>) -> Result<Response<UpdateNodeVersionResponse>, Status> {
+        let req = request.into_inner();
+        let task_id = req.task_id;
+        let version = req.version;
+        let code = req.node_code;
+        let nt = wd_tools::time::utc_timestamp();
+
+        let node = self.store.node(task_id, code).await;
+        let mut node = match node {
+            Ok(o) => o,
+            Err(e) => server_err!(UpdateNodeVersionResponse,e,),
+        };
+
+        let version = if let Some(v) = version{v}else{
+            match self.store.get_slot_revision(task_id).await {
+                Ok(ver) => ver,
+                Err(err) => server_err!(UpdateNodeVersionResponse,err,),
+            }
+        };
+
+        node.slot_version = version;
+        node.last_ping_time = nt;
+
+        if let Err(err) = self.store.save_node(task_id, &node).await {
+            server_err!(UpdateNodeVersionResponse,err,)
+        }
+        success!(UpdateNodeVersionResponse,)
     }
 
     async fn slot_distributions(

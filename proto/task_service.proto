@@ -22,6 +22,12 @@ service TaskService{
       get: "/api/v1/task/{task_id}/detail"
     };
   }
+  rpc TaskDelete(TaskDeleteRequest) returns (TaskDeleteResponse){
+    option (google.api.http) = {
+      post: "/api/v1/task/delete"
+      body: "*"
+    };
+  }
 }
 
 message CreateTaskRequest{
@@ -55,6 +61,13 @@ message TaskDetailRequest{
 message TaskDetailResponse{
   Task task = 1;
 
+  int32 code = 254; //0 success
+  string message = 255;
+}
+message TaskDeleteRequest{
+  int64 task_id = 1;
+}
+message TaskDeleteResponse{
   int32 code = 254; //0 success
   string message = 255;
 }

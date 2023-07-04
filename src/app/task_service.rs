@@ -1,9 +1,6 @@
 use crate::app::entity::{EntityStore, TaskEntity};
 use crate::proto;
-use crate::proto::{
-    CreateTaskRequest, CreateTaskResponse, SearchTasksRequest, SearchTasksResponse, Task,
-    TaskDetailRequest, TaskDetailResponse,
-};
+use crate::proto::{CreateTaskRequest, CreateTaskResponse, SearchTasksRequest, SearchTasksResponse, Task, TaskDeleteRequest, TaskDeleteResponse, TaskDetailRequest, TaskDetailResponse};
 use std::sync::Arc;
 use tonic::{Request, Response, Status};
 
@@ -72,5 +69,9 @@ impl proto::task_service_server::TaskService for TaskService {
         }
         task.nodes = list;
         success!(TaskDetailResponse, task: Some(task))
+    }
+
+    async fn task_delete(&self, _request: Request<TaskDeleteRequest>) -> Result<Response<TaskDeleteResponse>, Status> {
+        server_err!(TaskDeleteResponse,"not delete task",)
     }
 }

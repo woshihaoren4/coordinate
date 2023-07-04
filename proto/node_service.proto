@@ -26,7 +26,13 @@ service NodeService{
       get: "/api/v1/node/ping"
     };
   }
-
+  //更新node的version
+  rpc UpdateNodeVersion(UpdateNodeVersionRequest)returns(UpdateNodeVersionResponse){
+    option (google.api.http) = {
+      post: "/api/v1/node/update_version"
+      body: "*"
+    };
+  }
   //槽分配方式任务查询
   rpc SlotDistributions(SlotDistributionsRequest)returns(SlotDistributionsResponse){
     option (google.api.http) = {
@@ -82,6 +88,16 @@ message SlotDistributionsResponse{
 
   repeated SlotAlloc nodes_slot = 100; //槽分配情况
 
+  int32 code = 254; //0 success
+  string message = 255;
+}
+
+message UpdateNodeVersionRequest{
+  string node_code = 1;
+  int64 task_id = 2;
+  optional int64 version = 3;
+}
+message UpdateNodeVersionResponse{
   int32 code = 254; //0 success
   string message = 255;
 }
