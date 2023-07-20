@@ -25,12 +25,16 @@ case $1 in
 
   ;;
 "run")
-  echo "cargo run --bin coordination -- run"
-  sudo cargo run --bin coordination -- run
+  echo "cargo run --bin coordinate -- run"
+  sudo cargo run --bin coordinate -- run -c ./src/config/dev_config.toml
+;;
+"build_rel")
+  echo "cargo build --release --bin=coordinate"
+  sudo cargo build --release --bin=coordinate
 ;;
 "clean_task")
-  echo "cargo run --bin coordination -- clean"
-  sudo cargo run --bin coordination -- clean
+  echo "cargo run --bin coordinate -- clean"
+  sudo cargo run --bin coordinate -- clean
 ;;
 "clean")
   echo "cargo clean"
@@ -47,9 +51,9 @@ cat>".cargo/config.toml" <<EOF
 linker = "x86_64-linux-musl-gcc"
 EOF
 
-cargo build --release --bin=coordination --target=x86_64-unknown-linux-musl
-chmod +x target/x86_64-unknown-linux-musl/release/coordination
-tag="wdshihaoren/coordination:v0.0.1"
+sudo cargo build --release --bin=coordinate --target=x86_64-unknown-linux-musl
+chmod +x target/x86_64-unknown-linux-musl/release/coordinate
+tag="wdshihaoren/coordinate:v0.0.4"
 docker build -f ./Dockerfile -t "$tag"  .
 docker push "$tag"
 rm -rf .cargo

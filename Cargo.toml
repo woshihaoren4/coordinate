@@ -1,5 +1,5 @@
 [package]
-name = "coordination"
+name = "coordinate"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,11 +8,11 @@ edition = "2021"
 [dependencies]
 wd_log = "0.2.0"
 wd_run = "0.3.1"
-wd_tools = {version = "0.7.2",features=["point-free","uid","snowflake","time","pool","sync"]}
+wd_tools = {version = "0.8.3",features=["point-free","uid","snowflake","time","pool","sync"]}
 tokio = "1.28.0"
 tonic = "0.9.2"
-prost = "0.11.9"
-prost-types = "0.11.9"
+prost = "0.11.2"
+prost-types = "0.11.2"
 anyhow = "1.0.71"
 futures = "0.3.28"
 hyper = "0.14.26"
@@ -22,12 +22,14 @@ serde = "1.0.162"
 serde_json = "1.0.96"
 #sqlx = {version = "0.6.3",features = ["time","postgres", "runtime-tokio-rustls"] }
 etcd-rs = "1.0.1"
+#tonic-reflection = "0.9.2"
+tonic-reflect-protobuf = "0.9.0"
 
 [build-dependencies]
-tonic-build = {version = "0.9.2" ,features = ["prost"] }
+tonic-build = {version = "0.9.2",features = ["prost"] }
 
 [[bin]]
-name = "coordination"
+name = "coordinate"
 path = "src/main.rs"
 
 [[bin]]

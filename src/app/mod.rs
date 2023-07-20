@@ -15,6 +15,8 @@ use crate::proto;
 use std::sync::Arc;
 use std::time::Duration;
 
+pub(crate) const FILE_DESCRIPTOR_SET: &[u8] = include_bytes!("../proto/services_descriptor.bin");
+
 pub async fn server(
     cfg: Config,
     exit: Exit,
@@ -33,11 +35,18 @@ pub async fn server(
         .layer(CustomInterceptor::new(mid_log))
         .into_inner();
 
+    let reflect_service = tonic_reflect_protobuf::server::Builder::configure()
+        .register_encoded_file_descriptor_set(FILE_DESCRIPTOR_SET)
+        .build()
+        .unwrap();
+
+
     wd_log::log_debug_ln!("server start lister :{}", cfg.server.host_port);
     tonic::transport::Server::builder()
         .layer(layer)
         .add_service(proto::task_service_server::TaskServiceServer::new(ts))
         .add_service(proto::node_service_server::NodeServiceServer::new(ns))
+        .add_service(reflect_service)
         .serve(cfg.server.host_port.parse().unwrap())
         .await?;
     Ok(())

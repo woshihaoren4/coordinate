@@ -16,7 +16,7 @@ impl TaskBuild for RunApplication {
     fn args(&self) -> TaskInfo {
         TaskInfo::new("run", "run coordination server").register_arg(
             "-c",
-            "./src/config/dev_config.toml",
+            "./src/config/config.toml",
             "config file path",
         )
     }

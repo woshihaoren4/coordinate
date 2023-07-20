@@ -1,6 +1,6 @@
 FROM alpine:latest
 EXPOSE 6666
 WORKDIR /root/
-COPY target/x86_64-unknown-linux-musl/release/coordination .
+COPY target/x86_64-unknown-linux-musl/release/coordinate .
 
-CMD ["./coordination", "run"]
+CMD ["./coordinate", "run"]
