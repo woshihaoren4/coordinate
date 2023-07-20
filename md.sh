@@ -53,7 +53,7 @@ EOF
 
 sudo cargo build --release --bin=coordinate --target=x86_64-unknown-linux-musl
 chmod +x target/x86_64-unknown-linux-musl/release/coordinate
-tag="wdshihaoren/coordinate:v0.0.4"
+tag="wdshihaoren/coordinate:v0.0.5"
 docker build -f ./Dockerfile -t "$tag"  .
 docker push "$tag"
 rm -rf .cargo
